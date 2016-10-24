@@ -22,9 +22,9 @@ In this example we will make use of [sample_data](http://) for demonstration of 
 * ethene 
 * propene 
 * 1,3-butadiene
-* cyclopentan
+* cyclopentane
 * benzene 
-* benzene 
+* toluene 
 * para-xylene
 
 ### Creating a Pie object
@@ -60,13 +60,26 @@ from periodictable import formula
 m1, m2 = formula('He').mass, formula('O2').mass
 t1, t2 = 825, 3201
 
-pie.cal_mass(m1, m2, t1, t2)
+pie.ms_calibrate(m1, m2, t1, t2)
 ```
 You can check the success of your calibration by plotting a mass spectrum at a particular energy.
 
 ```python
 pie.ms_plot(13.1)
 ```
-If you're not happy, check the spectrum again with `ms_cursor
+If you're not happy, find new terms with with `pie.ms_cursor` and recalibrate with `pie.ms_calibrate`. Once you're happy we can start extracting data over the energy mass series.
+
+### Slicing the MS Data vs Energy
+
+We can slice data over the energy series using the `Pie.pie_slice(center, width, label)` where `center` and `width` are in units of m/z (Da), and `label` is a string. Again, this the function `formula` we imported above comes in handy. Remember gas mixture contained the hydrocarbons listed above. Taking toluene for example we can use it's molecular formula C7H8 to specifty as it's mass with formula using `formula('C7H8').mass` to return `92.13842`. The `width` of a given peak can be inspected with the `pie.ms_plot` method and the label can be a label of your choosing, or as I like to do, use the formula. Let's give it a go
+
+```python
+toluene = 'C7H8'
+mass = formula(toluene).mass
+width = 0.5
+pie.pie_slice(mass, width, tolene)
+```
+
+Next we can visualize that slice 
 
 
