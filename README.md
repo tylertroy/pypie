@@ -9,7 +9,9 @@ Built on python, pypie uses numpy and matplotlib to calibrate, reduce and plot 3
 * python 2.7+
 * numpy
 * matplotlib
-* periodictable
+
+## Optional
+* periodictable (easy install with pip)
 
 ## Usage
 
@@ -24,7 +26,7 @@ You'll need [pypie.py](pypie.py) and [sample_data](sample_data) to run the follo
 ```python
 import pypie
 
-from periodictable import formula
+from periodictable import formula # Optional library 
 
 # Use ggplot style graphs (optional)
 plt.style.use('ggplot')
@@ -34,7 +36,7 @@ data = '/path/to/sample_data'
 pie = pypie.Pie(data)
 
 # Mass calibration from data points
-m1, m2 = formula('He').mass, formula('O2').mass
+m1, m2 = formula('He').mass, formula('O2').mass # Requries periodictable.formula.
 t1, t2 = 825, 3201
 pie.ms_calibrate(m1, m2, t1, t2)
 
@@ -53,7 +55,7 @@ formulae_for_slicing = [
     ]
 
 # Define masses from formulae
-masses = [ formula(f).mass for f in formulae ]
+masses = [ formula(f).mass for f in formulae ] # Requries periodictable.formula.
 
 # Slice spectrum at each mass and a given width to generate PIEs
 for f, m in zip(formulae, masses):
@@ -88,7 +90,7 @@ pie = pypie.Pie(data)
 
 ```
 
-This will create a `Pie` object containing data read from `sample_data`. `sample_data` consists of a first column of time and subsequent columns of ion counts for each ionzation energy and photon current. In this case we measure a mass spectrum from 8 to 13.55 electronvolts (eV) with a step size of 0.075eV to give 74 columns of mass spectra. These data are stored as `pie.energy`, `pie.current`, `pie.time`, and `pie.counts`. We can list the available energies with `print(pie.energy)`. 
+This will create a `Pie` object containing data read from [sample_data](sample_data). `sample_data` consists of a first column of time and subsequent columns of ion counts for each ionzation energy and photon current. In this case we measure a mass spectrum from 8 to 13.55 electronvolts (eV) with a step size of 0.075eV to give 74 columns of mass spectra. These data are stored as `pie.energy`, `pie.current`, `pie.time`, and `pie.counts`. We can list the available energies with `print(pie.energy)`. 
 
 #### Calibrate the Mass Spectrum
 
@@ -124,35 +126,35 @@ pie.ms_plot(10)     # plot at the 10th step
 pie.ms_plot(13.1)   # plot at 13.1eV
 ```
 
-If you're not happy with the results, find new terms with with `Pie.ms_cursor` and recalibrate with `Pie.ms_calibrate`. Saving is accomplished with the `Pie.ms_save` or `Pie.ms_save_all` methods.
+If you're not happy with the results, find new terms with with `Pie.ms_cursor` and recalibrate with `Pie.ms_calibrate`. Saving is accomplished with the `Pie.ms_save` or `Pie.ms_save_all` methods. Note that default path is `./<data_filename>_<energyrange>_MS.txt'`.
 
 ```python
 path = '/path/to/save/file'
-pie.ms_save(10, path)     # save the 10th mass spectrum
-pie.ms_save(13.1, path)   # save the mass spectrum at 13.1eV
-pie.ms_save(path=path)    # save the sum of all mass spectra
-pie.ms_save()             # save the sum of all mass spectra to default path './<data_filename>_MS.txt'
+pie.ms_save(10, path)     # save the 10th mass spectrum to path
+pie.ms_save(13.1, path)   # save the mass spectrum at 13.1eV to path
+pie.ms_save(path=path)    # save the sum of all mass spectra to path
+pie.ms_save()             # save the sum of all mass spectra to default path.
 pie.ms_save_all(path)     # save all mass spectra to separate columns with m/z as common x-axis
 ```
 
 #### Slicing PIEs
 
-We can slice data over the energy series using the `Pie.pie_slice(center, width, label)` where `center` and `width` are in units of m/z, and `label` is a string. Again, using the function `formula` we imported above comes in handy. Remember that the gas mixture contained the hydrocarbons listed above. Taking toluene for example we can use it's molecular formula C<sub>7</sub>H<sub>8</sub> to specifty as it's mass with formula using `formula('C7H8').mass` to return `92.13842`. The `width` of a given peak can be inspected with the `Pie.ms_plot` or checked later with the `Pie.pie_show_slices` method.
+We can slice data over the energy series using the `Pie.pie_slice(center, width, label)` where `center` and `width` are in units of m/z, and `label` is a string. Again, using the function `formula` we imported above comes in handy. Remember that the gas mixture contained the hydrocarbons listed above. Taking toluene for example we can use it's molecular formula C<sub>7</sub>H<sub>8</sub> to specifty as it's mass with formula using `formula('C7H8').mass` to return `92.13842`. The `width` of a given peak can be inspected with the `Pie.ms_plot` or checked after the face with the `Pie.pie_show_slices` method.
 
 ```python
 toluene = 'C7H8'
-mass = formula(toluene).mass
+center = formula(toluene).mass
 width = 0.5
-pie.pie_slice(mass, width, tolene)
+pie.pie_slice(center, width, label=toluene)
 ```
 
 #### Plotting PIE Slice Information Over Mass Spectrum
 Now we can visualize that slice with the `Pie.pie_show_slices` method used below.
 
 ```python
-pie.pie_show_slices(10)            # Plot the 10th mass spectrum
-pie.pie_show_slices(13.1)          # Plot the mass spectrum at 13.1eV
-pie.pie_show_slices(xlim=(0,120))  # Plot the sum of all mass spectra with x-limits between 0, and 120 m/z.
+pie.pie_show_slices(10)            # Show slices on the 10th mass spectrum
+pie.pie_show_slices(13.1)          # Show slices on the mass spectrum at 13.1eV
+pie.pie_show_slices(xlim=(0,120))  # Show slices the sum of all mass spectra with x-limits between 0, and 120 m/z.
 ```
 
 ![zoom on PIE slice](./images/pie_slice.png)
@@ -173,7 +175,7 @@ for f, m in zip(formulae, masses):
 
 #### Viewing Slice Information and Deleting
 
-If you decide you want to remove any of the slices you can invoke `pie.pie_del('label')` where the lables and their information is found by invoking `pie.pie_info()`.
+If you decide you want to remove any of the slices you can invoke `pie.pie_delete('label')` where the lables and their information is found by invoking `pie.pie_info()`.
 
 #### Current/Background Correction and Normalization
 
@@ -189,7 +191,7 @@ Background correction may also be achieved by slicing somewhere on the mass spec
 
 ```python
 background_label = 'background'
-pie.pie_slice(mass=200, width=10, label=background_label)
+pie.pie_slice(center=200, width=10, label=background_label)
 pie.pie_background_correction(background_label)
 ```
 
