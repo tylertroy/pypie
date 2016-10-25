@@ -202,3 +202,5 @@ pie.pie_save(['C2H2'], path)   # Save PIE labelled 'C2H2' to '/path/to/save/file
 ```
 
 Here's how the final PIEs look masses at CH<sub>4</sub>,'C<sub>2</sub>H<sub>2</sub>','C<sub>2</sub>H<sub>4</sub>','C<sub>3</sub>H<sub>6</sub>','C<sub>4</sub>H<sub>6</sub>','C<sub>5</sub>H<sub>10</sub>','C<sub>6</sub>H<sub>6</sub>','C<sub>7</sub>H<sub>8</sub>','C<sub>8</sub>H<sub>10</sub>. The left is with current correction and the right is with current correction and normalization.
+
+![PIE curves](PIE_curves.png)
