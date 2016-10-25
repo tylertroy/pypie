@@ -126,7 +126,7 @@ pie.ms_plot(10)     # plot at the 10th step
 pie.ms_plot(13.1)   # plot at 13.1eV
 ```
 
-If you're not happy with the results, find new terms with with `Pie.ms_cursor` and recalibrate with `Pie.ms_calibrate`. Saving is accomplished with the `Pie.ms_save` or `Pie.ms_save_all` methods. Note that default path is `./<data_filename>_<energyrange>_MS.txt'`.
+If you're not happy with the results, find new terms with with `Pie.ms_cursor` and recalibrate with `Pie.ms_calibrate`. Saving is accomplished with the `Pie.ms_save` or `Pie.ms_save_all` methods. 
 
 ```python
 path = '/path/to/save/file'
@@ -136,6 +136,7 @@ pie.ms_save(path=path)    # save the sum of all mass spectra to path
 pie.ms_save()             # save the sum of all mass spectra to default path.
 pie.ms_save_all(path)     # save all mass spectra to separate columns with m/z as common x-axis
 ```
+Note that default path is `./<data_filename>_<energyrange>_MS.txt'`.
 
 #### Slicing PIEs
 
