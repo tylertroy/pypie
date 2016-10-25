@@ -71,7 +71,7 @@ pie.pie_normalization()
 
 # Plot and Save PIEs
 pie.pie_plot()
-pie.pie_save()    # Save to default name '<data_filename>_PIE
+pie.pie_save()    # Save to default name '<data_filename>_PIE.txt'
 
 ```
 ### Step-by-step Description
