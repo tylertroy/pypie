@@ -12,20 +12,62 @@ Built on python, pypie uses numpy and matplotlib to calibrate, reduce and plot 3
 * periodictable
 
 ## Usage
+
 pypie, `pypie.py`, may be run interactively from the python command line or invoked within a script for massive data throughput. `Pie` may also be inherited with modification of the `load` method for use with your own data types. 
 
-In this example we will make use of [sample_data](http://) for demonstration of it's use. The sample_data is a series of mass spectra over a given energy range measured from calibrant gas containing helium and trace hydrocarbons, each at 100ppm. These hydrocarbons are:
+In this example we will make use of [sample_data](http://) for demonstration of it's use. The sample_data is a series of mass spectra over a given energy range measured from calibrant gas containing helium and trace hydrocarbons, each at 100ppm. These hydrocarbons are: hydrogen, methane, acetylene, ethene, propene, 1,3-butadiene, cyclopentane, benzene, toluene, para-xylene. CHeck out the quickstart section for an overview of the commands to generate, plot, and save PIEs. A more thorough description of each method follows.
 
-* hydrogen
-* methane 
-* acetylene
-* ethene 
-* propene 
-* 1,3-butadiene
-* cyclopentane
-* benzene 
-* toluene 
-* para-xylene
+### Quickstart
+
+```python
+import pypie
+
+from periodictable import formula
+
+# Create pypie object from data
+data = '/path/to/sample_data'
+pie = pypie.Pie(data)
+
+# Mass calibration from data points
+m1, m2 = formula('He').mass, formula('O2').mass
+t1, t2 = 825, 3201
+pie.ms_calibrate(m1, m2, t1, t2)
+
+# Define formulae for slicing
+formulae_for_slicing = [
+    'H2',         # hydrogen
+    'CH4',        # methane
+    'C2H2',       # acetylene
+    'C2H4',       # ethene
+    'C3H6',       # propene
+    'C4H6',       # 1,3-butadiene
+    'C5H10',      # cyclopentane
+    'C6H6',       # benzene
+    'C7H8',       # toluene 
+    'C8H10',      # para-xylene
+    ]
+
+# Define masses from formulae
+masses = [ formula(form).mass for form in formulae ]
+
+# Slice spectrum at each mass and a given width to generate PIEs
+for formula, mass in zip(formulae, masses):
+    pie.pie_slice(mass=mass, width=0.5, label=formula)
+
+# Plot slices on mass spectrum
+pie.pie_show_slices()
+
+# Plot current, current correction, and normalization (optional)
+pie.current_plot()
+pie.pie_current([])
+pie.pie_norm([])
+
+# Plot and Save PIEs
+save_path = `/path/to/save/PIEs.dat'
+pie.pie_save([])
+pie.pie_plot([])
+
+```
 
 ### Creating a Pie object
 
@@ -34,9 +76,9 @@ First we import pypie and create a Pie object.
 ```python
 import pypie
 
-data = 'path/to/sample_data'
-
+data = '/path/to/sample_data'
 pie = pypie.Pie(data)
+
 ```
 
 This will create a `Pie` object containing data read from `sample_data`. `sample_data` consists of a first column of time and subsequent columns of ion counts for each ionzation energy and photon current. In this case we measure a mass spectrum from 8 to 13.55 electronvolts (eV) with a step size of 0.075eV to give 74 columns of mass spectra. These data are stored as `pie.energy`, `pie.current`, `pie.time`, and `pie.counts`. We can list the available energies with `print(pie.energy)`. 
