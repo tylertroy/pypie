@@ -147,7 +147,32 @@ for f, m in zip(formulae, masses):
 
 If you decide you want to remove any of the slices you can invoke `pie.pie_del('label')` where the lables and their information is found by invoking `pie.pie_info()`.
 
+#### Current/Background Correction and Normalization
+
+These data also include a current measurement for each step (mass spectrum) and this may be used to scale each PIE data point as a function of relative synhcrotron flux. Before correcting for current you might like to first plot the current with respect to energy to confirm its quality.
+
+```python
+pie.current_plot()
+pie.pie_current_correction()
+```
+![Current measured by Kiethley](kiethley_current.png)
+
+Background correction may also be achieved by slicing somewhere on the mass spectrum representative of background signal (i.e. no peaks) and using it's label to divide all other PIEs by that value. You may also pass the a list as the `pie_keys` keyword of only those labels you want to correct. The `pie_keys` keyword is also available for `Pie.pie_normalize`, and `Pie.pie_normalize_to
+
+```python
+background_label = 'background'
+pie.pie_slice(mass=200, width=10, label=background_label)
+pie.pie_background_correction(background_label)
+```
+
+We can also normalize all PIEs to their respective minima and maxima, or normalize to the value at a given energy.
+
+```python
+pie.pie_normalize()
+pie.pie_normalize_to(13.1)
+```
+
 #### Plotting and Saving PIEs
 
-Finally we can plot and save the PIEs we have sliced using `Pie.pie_plot`, and `Pie.pie_save`
+Finally we can plot and save the PIEs we have sliced using `Pie.pie_plot`, and `Pie.pie_save` methods.
 
