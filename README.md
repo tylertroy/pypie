@@ -131,6 +131,7 @@ path = '/path/to/save/file'
 pie.ms_save(10, path)     # save the 10th mass spectrum
 pie.ms_save(13.1, path)   # save the mass spectrum at 13.1eV
 pie.ms_save(path=path)    # save the sum of all mass spectra
+pie.ms_save()             # save the sum of all mass spectra to default path './<data_filename>_MS.txt'
 pie.ms_save_all(path)     # save all mass spectra to separate columns with m/z as common x-axis
 ```
 
@@ -210,7 +211,7 @@ Finally we can plot and save the PIEs we have sliced using `Pie.pie_plot`, and `
 path = '/path/to/save/file'
 pie.pie_plot()                 # Plot all PIEs
 pie.pie_plot(['C2H2', 'C7H8']) # Plot PIEs labelled 'C2H2' & 'C7H8'
-pie.pie_save()                 # Save all PIEs to '/path/to/save/file'
+pie.pie_save()                 # Save all PIEs to default path './<data_filename>_PIE.txt'
 pie.pie_save(['C2H2'], path)   # Save PIE labelled 'C2H2' to '/path/to/save/file'
 ```
 
