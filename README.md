@@ -86,16 +86,16 @@ This will create a `Pie` object containing data read from `sample_data`. `sample
 
 #### Calibrate the Mass Spectrum
 
-After loading the data we need to calibrate its time component to m/z. To achieve this we should first inspect a mass spectrum at an energy with some known peaks to determine what those peaks correspond to in time (or data point in this case). This may be achieved with the `Pie.ms_cursor` which takes a specific energy as an argument such as one you pronted above. 
+After loading the data we need to calibrate its time component to m/z. To achieve this we should first inspect a mass spectrum to determine which peaks correspond to in time (or data point in this case) to which known masses. This may be achieved with the `Pie.ms_cursor`. You may either provide no arguments, as below, or with an energy to print a specific energy. Available energies can be inspected with `Pie.energy`.
 
 ```python
 pie.ms_cursor(13.1)
 ```
-This will use matplotlib to plot the mass spectrum at 13.05eV. You should be familiar with your data to be able to identify which peaks might correspond to which mass. You will need two peaks to calibrate the m/z for the spectrum. In this case I know I have Helium (He) 825, and Oxygen (O2) at 3201. You can zoom on a particular peak with the zoom tool to get this precise value, the cursor will track your mouse position and display it next to the cursor. This is demonstrated below for the helium peak
+This will use matplotlib to plot the mass spectrum at 13.1eV. You should be familiar with your data to be able to identify which peaks might correspond to which mass. You will need two peaks to calibrate the m/z for the spectrum. In this case I know I have Helium (He) 825, and Oxygen (O2) at 3201. You can zoom on a particular peak with the zoom tool to get this precise value, the cursor will track your mouse position and display it next to the cursor. This is demonstrated below for the helium peak
 
 ![zoom tool](ms_cursor_tool.png)
 
-With these two times, and masses and using `Pie.cal_mass` method we can calibrate our time data to m/z. Using the `periodictable` library `formula` function makes defining the masses significantly easier since you can simply define the formula and infer the mass.
+With the `Pie.cal_mass` method we can calibrate our time data to m/z using two data points and two masses. Using the `periodictable` library `formula` function makes defining the masses significantly easier since you can simply define the formula and infer the mass. However you can just specify the masses directly if you prefer.
 
 ```python
 from periodictable import formula
@@ -105,7 +105,7 @@ t1, t2 = 825, 3201
 
 pie.ms_calibrate(m1, m2, t1, t2)
 ```
-You can check the success of your calibration by plotting a mass spectrum at a particular energy.
+You can check the success of your calibration by plotting a mass spectrum at a particular energy or over all energies.
 
 ```python
 pie.ms_plot(13.1)
