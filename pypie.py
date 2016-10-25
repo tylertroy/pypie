@@ -8,7 +8,8 @@ from matplotlib.markers import MarkerStyle
 import matplotlib.ticker as plticker
 from os.path import join, split
 from os import listdir
-from pylab import connect, searchsorted
+from pylab import connect
+from pylab import searchsorted
 from math import sqrt
 from numpy import average
 from numpy import mean
@@ -16,7 +17,6 @@ from numpy import linspace
 from numpy import vstack
 from numpy import std
 from collections import deque
-from periodictable import formula
 
 """ Function Definitions """
 
@@ -138,7 +138,8 @@ def find_peaks(v, delta, x = None):
 """ Class Definitions """
         
 class Pie(object):
-    """docstring for Pie"""
+    """A 3D data processing library for mass spectrometric data series.
+    """
     _marker = cycle(MarkerStyle.markers.keys())
     def __init__(self, filepath):
         super(Pie, self).__init__()
@@ -146,7 +147,6 @@ class Pie(object):
         self.mz = {}
         self.pie = {}
         self.xax = []
-        self.by_mass = lambda x: formula(x).mass
     def pie_colors(self, space, limits):
         self.colors = iter(space(linspace(*limits)))
     def get_peaks(self, index, mincount):
@@ -175,6 +175,84 @@ class Pie(object):
         self.counts_sum = np.sum(np.array(self.counts).T, axis=1)
     def stdev(self, files=()):
         pass
+    def save(self, filepath):
+        if filepath:
+            path, name = split(filepath)
+            if not path:
+                path = self.filepath
+        filepath = join(path, name)
+    def by_mass(self, key):
+        """ Sort function to sort by PIE mass center.
+        """
+        return self.pie[key]['mz']
+    def ms_cursor(self, index=None, block=True):
+        if index:
+            try:
+                index = index if type(index) is int else self.energy.index(index)
+                energy = index
+            except ValueError:
+                print('{} is not an available energy\nTry one of these:'.format(index))
+                print(self.energy)
+                return
+            y = self.counts[index]
+        else:
+            y = self.counts_sum
+            energy = '{}-{}'.format(self.energy[0], self.energy[-1])
+        x = self.ypts       
+        fig, ax = plt.subplots()
+        c = SnaptoCursor(ax, x, y)
+        connect('motion_notify_event', c.mouse_move)
+        ax.plot(x, y, 'r')
+        ax.set_xlabel('Point')
+        ax.set_ylabel('Ion Count')
+        ax.set_title('Mass Spectrum at {}eV'.format(energy))
+        plt.xlim(0,max(x))
+        plt.show(block=block)
+    def ms_calibrate(self, m1, m2, t1, t2):
+        terms = m1, m2, t1, t2
+        self.k, self.t0 = cal_mass(*terms)
+        self.mass = [index_to_mass(t, self.k, self.t0) 
+            for t in range(self.ybins)]
+    def ms_plot(self, index=None):
+        if index:
+            index = index if type(index) is int else self.energy.index(index)
+            energy = index
+            spectrum = self.counts[index]
+        else:
+            spectrum = self.counts_sum
+            energy = '{}-{}'.format(self.energy[0], self.energy[-1])
+        plt.plot(self.mass, spectrum)
+        plt.xlim((min(self.mass), max(self.mass)))
+        plt.xlabel('m/z', fontsize=20)
+        plt.ylabel('Ion Counts', fontsize=20)
+        plt.title('Mass Spectrum at {}eV'.format(energy))
+        plt.show()
+    def ms_save(self, index=None, path=''):
+        if index:
+            index = index if type(index) is int else self.energy.index(index)
+            counts = self.counts[index]
+            energy = self.energy[index]
+        else:
+            counts = self.counts_sum
+            energy = '{}-{}'.format(self.energy[0], self.energy[-1])
+        if not path:
+            energy_string = str(energy).replace('.','p')
+            path = '{}_{}_MS.txt'.format(self.filename, energy_string)
+
+        header = ''.join(['m/z', '\t','counts at ', str(energy), 'eV','\n']) 
+        with open(path, 'w') as f:
+            f.write(header)
+            for mass, count in zip(self.mass, counts):
+                string = '\t'.join([str(mass), str(count)]) + '\n'
+                f.write(string)
+    def ms_save_all(self, filename=''):
+        header = 'm/z\t' + '\t'.join([ str(energy) for energy in self.energy ]) + '\n'
+        with open(filename, 'w') as f:
+            f.write(header)
+            for mass, count in zip(self.mass, zip(*self.counts)):
+                counts =  '\t'.join([str(c) for c in count])
+                string = ''.join([str(mass), '\t', counts, '\n'])
+                f.write(string)
     def pie_slice(self, center, width, label=None):
         label = label if label else center
         mcenter = center
@@ -195,50 +273,6 @@ class Pie(object):
                 'mz'      : mcenter
               }
         self.pie[label] = pie
-    def save(self, filepath):
-        if filepath:
-            path, name = split(filepath)
-            if not path:
-                path = self.filepath
-        filepath = join(path, name)
-    def ms_save(self, index=None, path=''):
-        if not path:
-            path = '{}_MS.txt'.format(self.filename)
-        if index:
-            index = index if type(index) is int else self.energy.index(index)
-            counts = self.counts[index]
-        else:
-            counts = self.counts_sum
-            index = '{} to {}'.format(self.energy[0], self.energy[-1])
-
-        header = ''.join(['m/z', '\t','counts at ', str(index), 'eV','\n']) 
-        with open(path, 'w') as f:
-            f.write(header)
-            for mass, count in zip(self.mass, counts):
-                string = '\t'.join([str(mass), str(count)]) + '\n'
-                f.write(string)
-    def ms_save_all(self, filename=''):
-        header = 'm/z\t' + '\t'.join([ str(energy) for energy in self.energy ]) + '\n'
-        with open(filename, 'w') as f:
-            f.write(header)
-            for mass, count in zip(self.mass, zip(*self.counts)):
-                counts =  '\t'.join([str(c) for c in count])
-                string = ''.join([str(mass), '\t', counts, '\n'])
-                f.write(string)
-    def ms_plot(self, index=None):
-        if index:
-            energy = index
-            index = index if type(index) is int else self.energy.index(index)
-            spectrum = self.counts[index]
-        else:
-            spectrum = self.counts_sum
-            energy = '{} to {}'.format(self.energy[0], self.energy[-1])
-        plt.plot(self.mass, spectrum)
-        plt.xlim((min(self.mass), max(self.mass)))
-        plt.xlabel('m/z', fontsize=20)
-        plt.ylabel('Ion Counts', fontsize=20)
-        plt.title('Mass Spectrum at {}eV'.format(energy))
-        plt.show()
     def pie_save(self, pie_keys=None, path=''):
         if not path:
             path = '{}_PIEs'.format(self.filename)
@@ -281,39 +315,16 @@ class Pie(object):
         for key in pie_keys:
             pie = self.pie[key]['slice']
             self.pie[key]['slice'] = [ (count / c) for count, c in zip(pie, current) ]
-    def ms_cursor(self, index=None, block=True):
-        if index:
-            energy = index
-            try:
-                index = index if type(index) is int else self.energy.index(index)
-            except ValueError:
-                print('{} is not an available energy\nTry one of these:'.format(index))
-                print(self.energy)
-                return
-            y = self.counts[index]
-        else:
-            y = self.counts_sum
-            energy = '{} to {}'.format(self.energy[0], self.energy[-1])
-        x = self.ypts       
-        fig, ax = plt.subplots()
-        c = SnaptoCursor(ax, x, y)
-        connect('motion_notify_event', c.mouse_move)
-        ax.plot(x, y, 'r')
-        ax.set_xlabel('Point')
-        ax.set_ylabel('Ion Count')
-        ax.set_title('Mass Spectrum at {}ev'.format(energy))
-        plt.xlim(0,max(x))
-        plt.show(block=block)
     def pie_show_slices(self, index=None, filepath=None, xlim=None, ylim=None, params=None):
         """ Visualize the data slices extracted by self.pie_slice. If no
         filepath is supplied, spectrum will not be saved. """
         if index:
-            energy = index
             index = index if type(index) is int else self.energy.index(index)
             spectrum = self.counts[index]
+            energy = self.energy[index]
         else:
             spectrum = self.counts_sum
-            energy = '{} to {}'.format(self.energy[0], self.energy[-1])
+            energy = '{}-{}'.format(self.energy[0], self.energy[-1])
         default = {
             'color':'k',
         }
@@ -345,7 +356,7 @@ class Pie(object):
             plt.savefig(filepath)
         else:
             plt.show()
-    def pie_del(self, key):
+    def pie_delete(self, key):
         """ a simple wrapper for the self.pie dict pop function """
         self.pie.pop(key)
     def pie_plot(self, pie_keys=None, params=None):
@@ -369,17 +380,6 @@ class Pie(object):
         plt.title('Photoionization Efficiency Curve')
         plt.legend(loc=2, borderaxespad=0., fontsize='x-large')
         plt.show()
-    def current_plot(self):
-        plt.plot(self.energy, self.current)
-        plt.xlabel('Energy (eV)')
-        plt.ylabel('Current (A)')
-        plt.title('Beam Current Measured by Kiethley-6485')
-        plt.show()
-    def ms_calibrate(self, m1, m2, t1, t2):
-        terms = m1, m2, t1, t2
-        self.k, self.t0 = cal_mass(*terms)
-        self.mass = [index_to_mass(t, self.k, self.t0) 
-            for t in range(self.ybins)]
     def pie_background_correction(self, background_key, pie_keys=None):
         """ Subtract PIE labelled "background_key" from all other PIES.
         """
@@ -390,12 +390,15 @@ class Pie(object):
         for key in pie_keys:
             pie = self.pie[key]['slice']
             self.pie[key]['slice'] = [ count - b for count, b in zip(pie, bg) ]
-    def pie_normalizee_to(self, index, pie_keys=None):
+    def pie_normalize_to(self, index, pie_keys=None):
         """ Normalize extracted PIEs to the value specified at index.
         """
         index = index if type(index) is int else self.energy.index(index)
         if not pie_keys:
-            pie_keys = sorted(list(self.pie.keys()), key=self.by_mass)
+            try: 
+                pie_keys = sorted(list(self.pie.keys()), key=self.by_mass)
+            except:
+                pie_keys = sorted(list(self.pie.keys()))
         for key in pie_keys:
             pie = self.pie[key]['slice']
             normal = pie[index]
@@ -408,6 +411,12 @@ class Pie(object):
                 if key not in info:
                     print('{}: {}'.format(key, val))
             print()
+    def current_plot(self):
+        plt.plot(self.energy, self.current)
+        plt.xlabel('Energy (eV)')
+        plt.ylabel('Current (A)')
+        plt.title('Beam Current Measured by Kiethley-6485')
+        plt.show()
 
 class SnaptoCursor:
     """
