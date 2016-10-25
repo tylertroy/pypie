@@ -93,7 +93,7 @@ pie.ms_cursor(13.1)
 ```
 This will use matplotlib to plot the mass spectrum at 13.05eV. You should be familiar with your data to be able to identify which peaks might correspond to which mass. You will need two peaks to calibrate the m/z for the spectrum. In this case I know I have Helium (He) 825, and Oxygen (O2) at 3201. You can zoom on a particular peak with the zoom tool to get this precise value, the cursor will track your mouse position and display it next to the cursor. This is demonstrated below for the helium peak
 
-![zoom tool](https://)
+![zoom tool](ms_cursor_tool.png)
 
 With these two times, and masses and using `Pie.cal_mass` method we can calibrate our time data to m/z. Using the `periodictable` library `formula` function makes defining the masses significantly easier since you can simply define the formula and infer the mass.
 
@@ -123,6 +123,7 @@ width = 0.5
 pie.pie_slice(mass, width, tolene)
 ```
 
+#### Plotting Slice Information Over Mass Spectrum
 Now we can visualize that slice with the `Pie.pie_show_slices` method used below.
 
 ```python
@@ -148,5 +149,5 @@ If you decide you want to remove any of the slices you can invoke `pie.pie_del('
 
 #### Plotting and Saving PIEs
 
-Finally we can plot and save the PIEs we have slices using
+Finally we can plot and save the PIEs we have sliced using `Pie.pie_plot`, and `Pie.pie_save`
 
