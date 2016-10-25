@@ -68,8 +68,9 @@ pie.pie_save([])
 pie.pie_plot([])
 
 ```
+### Step-by-step Description
 
-### Creating a Pie object
+#### Creating a Pie object
 
 First we import pypie and create a Pie object.
 
@@ -83,7 +84,7 @@ pie = pypie.Pie(data)
 
 This will create a `Pie` object containing data read from `sample_data`. `sample_data` consists of a first column of time and subsequent columns of ion counts for each ionzation energy and photon current. In this case we measure a mass spectrum from 8 to 13.55 electronvolts (eV) with a step size of 0.075eV to give 74 columns of mass spectra. These data are stored as `pie.energy`, `pie.current`, `pie.time`, and `pie.counts`. We can list the available energies with `print(pie.energy)`. 
 
-### Calibrate the Mass Spectrum
+#### Calibrate the Mass Spectrum
 
 After loading the data we need to calibrate its time component to m/z. To achieve this we should first inspect a mass spectrum at an energy with some known peaks to determine what those peaks correspond to in time (or data point in this case). This may be achieved with the `Pie.ms_cursor` which takes a specific energy as an argument such as one you pronted above. 
 
@@ -111,7 +112,7 @@ pie.ms_plot(13.1)
 ```
 If you're not happy, find new terms with with `pie.ms_cursor` and recalibrate with `pie.ms_calibrate`. Once you're happy we can start extracting data over the energy mass series.
 
-### Slicing the MS Data vs Energy
+#### Slicing the MS Data vs Energy
 
 We can slice data over the energy series using the `Pie.pie_slice(center, width, label)` where `center` and `width` are in units of m/z (Da), and `label` is a string. Again, this the function `formula` we imported above comes in handy. Remember gas mixture contained the hydrocarbons listed above. Taking toluene for example we can use it's molecular formula C7H8 to specifty as it's mass with formula using `formula('C7H8').mass` to return `92.13842`. The `width` of a given peak can be inspected with the `pie.ms_plot` method and the label can be a label of your choosing, or as I like to do, use the formula. Let's give it a go
 
@@ -122,6 +123,6 @@ width = 0.5
 pie.pie_slice(mass, width, tolene)
 ```
 
-Next we can visualize that slice 
+Now we can visualize that slice with the `Pie.pie_show_slices` method
 
 
