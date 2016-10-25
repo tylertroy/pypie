@@ -24,6 +24,9 @@ import pypie
 
 from periodictable import formula
 
+# Use ggplot style graphs (optional)
+plt.style.use('ggplot')
+
 # Create pypie object from data
 data = '/path/to/sample_data'
 pie = pypie.Pie(data)
