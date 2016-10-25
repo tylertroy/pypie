@@ -15,7 +15,7 @@ Built on python, pypie uses numpy and matplotlib to calibrate, reduce and plot 3
 
 pypie, `pypie.py`, may be run interactively from the python command line or invoked within a script for massive data throughput. `Pie` may also be inherited with modification of the `load` method for use with your own data types. 
 
-In this example we will make use of [sample_data](http://) for demonstration of it's use. The sample_data is a series of mass spectra over a given energy range measured from calibrant gas containing helium and trace hydrocarbons, each at 100ppm. These hydrocarbons are: hydrogen, methane, acetylene, ethene, propene, 1,3-butadiene, cyclopentane, benzene, toluene, para-xylene. CHeck out the quickstart section for an overview of the commands to generate, plot, and save PIEs. A more thorough description of each method follows.
+In this example we will make use of [sample_data](http://) for demonstration of it's use. The sample_data is a series of mass spectra over a given energy range measured from calibrant gas containing helium and trace hydrocarbons, each at 100ppm. These hydrocarbons are: hydrogen, methane, acetylene, ethene, propene, 1,3-butadiene, cyclopentane, benzene, toluene, para-xylene. Check out the quickstart section for an overview of the commands to generate, plot, and save PIEs. A step-by-step description of each method follows.
 
 ### Quickstart
 
@@ -48,7 +48,7 @@ formulae_for_slicing = [
     ]
 
 # Define masses from formulae
-masses = [ formula(form).mass for form in formulae ]
+masses = [ formula(f).mass for f in formulae ]
 
 # Slice spectrum at each mass and a given width to generate PIEs
 for formula, mass in zip(formulae, masses):
@@ -114,7 +114,7 @@ If you're not happy, find new terms with with `pie.ms_cursor` and recalibrate wi
 
 #### Slicing the MS Data vs Energy
 
-We can slice data over the energy series using the `Pie.pie_slice(center, width, label)` where `center` and `width` are in units of m/z (Da), and `label` is a string. Again, this the function `formula` we imported above comes in handy. Remember gas mixture contained the hydrocarbons listed above. Taking toluene for example we can use it's molecular formula C<sub>7</sub>H8 to specifty as it's mass with formula using `formula('C7H8').mass` to return `92.13842`. The `width` of a given peak can be inspected with the `pie.ms_plot` method and the label can be a label of your choosing, or as I like to do, use the formula. Let's give it a go
+We can slice data over the energy series using the `Pie.pie_slice(center, width, label)` where `center` and `width` are in units of m/z (Da), and `label` is a string. Again, this the function `formula` we imported above comes in handy. Remember gas mixture contained the hydrocarbons listed above. Taking toluene for example we can use it's molecular formula C<sub>7</sub>H<sub>8</sub> to specifty as it's mass with formula using `formula('C7H8').mass` to return `92.13842`. The `width` of a given peak can be inspected with the `pie.ms_plot` method and the label can be a label of your choosing, or as I like to do, use the formula. Let's give it a go
 
 ```python
 toluene = 'C7H8'
@@ -123,6 +123,30 @@ width = 0.5
 pie.pie_slice(mass, width, tolene)
 ```
 
-Now we can visualize that slice with the `Pie.pie_show_slices` method
+Now we can visualize that slice with the `Pie.pie_show_slices` method used below.
 
+```python
+pie.pie_show_slices(xlim=(0,120))
+```
+
+![zoom on PIE slice](pie_slice.png)
+
+If we zoom in on m/z 92 (C<sub>7</sub>H<sub>8</sub>), we can see a red line and a blue rectangle. The red line represents the postition defined by the `mass`, and the blue by the `width` specified with `pie.pie_slice` above. `pie.pie_show_slices` takes arguments `index`, `filepath`, `xlim`, `ylim`, `params`. index may be a data set index in the series or an energy in eV. Leaving all arguments blank will plot the total counts over all energies (indices) with no image saving. `params` is passed to the `matplotlib.plot` function for customization of the graph.
+
+You can also run `pie_slice` in a loop for multiple slicing. For example given the hydrocarbons in this premix:
+
+```python
+formulae = [ 'CH4','C2H2','C2H4','C3H6','C4H6','C5H10','C6H6','C7H8','C8H10']
+masses = [ formula(f).mass for f in formulae ]
+width = 0.5
+for f, m in zip(formulae, masses):
+    pie.pie_slice(m, 0.5, label=f)
+```
+![multiple PIE slices](many_slices.png)
+
+If you decide you want to remove any of the slices you can invoke `pie.pie_del('label')` where the lables and their information is found by invoking `pie.pie_info()`.
+
+#### Plotting and Saving PIEs
+
+Finally we can plot and save the PIEs we have slices using
 
