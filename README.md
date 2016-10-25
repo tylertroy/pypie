@@ -63,7 +63,7 @@ pie.pie_current([])
 pie.pie_norm([])
 
 # Plot and Save PIEs
-save_path = `/path/to/save/PIEs.dat'
+save_path = '/path/to/save/PIEs.dat'
 pie.pie_save([])
 pie.pie_plot([])
 
