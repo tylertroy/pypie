@@ -96,7 +96,7 @@ pie.ms_cursor(13.1)
 ```
 This will use matplotlib to plot the mass spectrum at 13.1eV. You should be familiar with your data to be able to identify which peaks might correspond to which mass. You will need two peaks to calibrate the m/z for the spectrum. In this case I know I have Helium (He) 825, and Oxygen (O2) at 3201. You can zoom on a particular peak with the zoom tool to get this precise value, the cursor will track your mouse position and display it next to the cursor. This is demonstrated below for the helium peak
 
-![zoom tool](ms_cursor_tool.png)
+![zoom tool](./images/ms_cursor_tool.png)
 
 With the `Pie.cal_mass` method we can calibrate our time data to m/z using two data points and two masses. Using the `periodictable` library `formula` function makes defining the masses significantly easier since you can simply define the formula and infer the mass. However you can just specify the masses directly if you prefer.
 
@@ -147,7 +147,7 @@ Now we can visualize that slice with the `Pie.pie_show_slices` method used below
 pie.pie_show_slices(xlim=(0,120))
 ```
 
-![zoom on PIE slice](pie_slice.png)
+![zoom on PIE slice](./images/pie_slice.png)
 
 If we zoom in on m/z 92 (C<sub>7</sub>H<sub>8</sub>), we can see a red line and a blue rectangle. The red line represents the postition defined by the `mass`, and the blue by the `width` specified with `pie.pie_slice` above. `pie.pie_show_slices` takes arguments `index`, `filepath`, `xlim`, `ylim`, `params`. index may be a data set index in the series or an energy in eV. Leaving all arguments blank will plot the total counts over all energies (indices) with no image saving. `params` is passed to the `matplotlib.plot` function for customization of the graph.
 
@@ -160,7 +160,7 @@ width = 0.5
 for f, m in zip(formulae, masses):
     pie.pie_slice(m, 0.5, label=f)
 ```
-![multiple PIE slices](many_slices.png)
+![multiple PIE slices](./images/many_slices.png)
 
 If you decide you want to remove any of the slices you can invoke `pie.pie_del('label')` where the lables and their information is found by invoking `pie.pie_info()`.
 
@@ -172,7 +172,7 @@ These data also include a current measurement for each step (mass spectrum) and 
 pie.current_plot()
 pie.pie_current_correction()
 ```
-![Current measured by Kiethley](kiethley_current.png)
+![Current measured by Kiethley](./images/kiethley_current.png)
 
 Background correction may also be achieved by slicing somewhere on the mass spectrum representative of background signal (i.e. no peaks) and using it's label to divide all other PIEs by that value. You may also pass the a list as the `pie_keys` keyword of only those labels you want to correct. The `pie_keys` keyword is also used for `Pie.pie_normalize`, and `Pie.pie_normalize_to`.
 
@@ -206,4 +206,4 @@ pie.pie_save(['C2H2'], path)   # Save PIE labelled 'C2H2' to '/path/to/save/file
 
 Here's how the final PIEs look masses at CH<sub>4</sub>,'C<sub>2</sub>H<sub>2</sub>','C<sub>2</sub>H<sub>4</sub>','C<sub>3</sub>H<sub>6</sub>','C<sub>4</sub>H<sub>6</sub>','C<sub>5</sub>H<sub>10</sub>','C<sub>6</sub>H<sub>6</sub>','C<sub>7</sub>H<sub>8</sub>','C<sub>8</sub>H<sub>10</sub>. The left is with current correction and the right is with current correction and normalization.
 
-![PIE curves](PIE_curves.png)
+![PIE curves](./images/PIE_curves.png)
