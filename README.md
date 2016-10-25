@@ -17,7 +17,7 @@ Built on python, pypie uses numpy and matplotlib to calibrate, reduce and plot 3
 
 pypie, `pypie.py`, may be run interactively from the python command line or invoked within a script for massive data throughput. `pypie.Pie` may also be inherited with modification of the `load` method for use with your own data types. 
 
-In this example we will make use of [sample_data](http://) for demonstration of it's use. The sample_data is a series of mass spectra over a given energy range measured from calibrant gas containing helium and trace hydrocarbons, each at 100ppm. These hydrocarbons are: hydrogen, methane, acetylene, ethene, propene, 1,3-butadiene, cyclopentane, benzene, toluene, para-xylene. Check out the quickstart section for an overview of the commands to generate, plot, and save PIEs. A step-by-step description of each method follows.
+In this example we will make use of [sample_data](http://) for demonstration of its use. The sample_data is a series of mass spectra over a given energy range measured from calibrant gas containing helium and trace hydrocarbons, each at 100ppm. These hydrocarbons are: hydrogen, methane, acetylene, ethene, propene, 1,3-butadiene, cyclopentane, benzene, toluene, para-xylene. Check out the quickstart section for an overview of the commands to generate, plot, and save PIEs. A step-by-step description of each method follows.
 
 ### Quickstart
 
