@@ -19,6 +19,8 @@ In this example we will make use of [sample_data](http://) for demonstration of 
 
 ### Quickstart
 
+You'll need [pypie.py](pypie.py) and [sample_data](sample_data) to run the following. You can also get [sample_data_script.py](sample_data_script.py) and run it directly. 
+
 ```python
 import pypie
 
@@ -54,21 +56,20 @@ formulae_for_slicing = [
 masses = [ formula(f).mass for f in formulae ]
 
 # Slice spectrum at each mass and a given width to generate PIEs
-for formula, mass in zip(formulae, masses):
-    pie.pie_slice(mass=mass, width=0.5, label=formula)
+for f, m in zip(formulae, masses):
+    pie.pie_slice(mass=m, width=0.5, label=f)
 
 # Plot slices on mass spectrum
 pie.pie_show_slices()
 
 # Plot current, current correction, and normalization (optional)
 pie.current_plot()
-pie.pie_current([])
-pie.pie_norm([])
+pie.pie_current_correction()
+pie.pie_normalization()
 
 # Plot and Save PIEs
-save_path = '/path/to/save/PIEs.dat'
-pie.pie_save([])
-pie.pie_plot([])
+pie.pie_plot()
+pie.pie_save()    # Save to default name '<data_filename>_PIE
 
 ```
 ### Step-by-step Description
