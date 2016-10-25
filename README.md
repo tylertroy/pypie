@@ -95,7 +95,7 @@ This will use matplotlib to plot the mass spectrum at 13.05eV. You should be fam
 
 ![zoom tool](https://)
 
-Now these two times and two masses `Pie.cal_mass` method to calibrate our time data to m/z. Using the `periodictable` library `formula` function makes defining the masses significantly easier.
+With these two times, and masses and using `Pie.cal_mass` method we can calibrate our time data to m/z. Using the `periodictable` library `formula` function makes defining the masses significantly easier since you can simply define the formula and infer the mass.
 
 ```python
 from periodictable import formula
@@ -114,7 +114,7 @@ If you're not happy, find new terms with with `pie.ms_cursor` and recalibrate wi
 
 #### Slicing the MS Data vs Energy
 
-We can slice data over the energy series using the `Pie.pie_slice(center, width, label)` where `center` and `width` are in units of m/z (Da), and `label` is a string. Again, this the function `formula` we imported above comes in handy. Remember gas mixture contained the hydrocarbons listed above. Taking toluene for example we can use it's molecular formula C7H8 to specifty as it's mass with formula using `formula('C7H8').mass` to return `92.13842`. The `width` of a given peak can be inspected with the `pie.ms_plot` method and the label can be a label of your choosing, or as I like to do, use the formula. Let's give it a go
+We can slice data over the energy series using the `Pie.pie_slice(center, width, label)` where `center` and `width` are in units of m/z (Da), and `label` is a string. Again, this the function `formula` we imported above comes in handy. Remember gas mixture contained the hydrocarbons listed above. Taking toluene for example we can use it's molecular formula C7H8 to specifty as it's mass with formula using `formula('C<sub>7</sub>H8').mass` to return `92.13842`. The `width` of a given peak can be inspected with the `pie.ms_plot` method and the label can be a label of your choosing, or as I like to do, use the formula. Let's give it a go
 
 ```python
 toluene = 'C7H8'
