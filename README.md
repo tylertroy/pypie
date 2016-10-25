@@ -105,12 +105,26 @@ t1, t2 = 825, 3201
 
 pie.ms_calibrate(m1, m2, t1, t2)
 ```
+
+#### Plotting and Saving Mass Spectra
+
 You can check the success of your calibration by plotting a mass spectrum at a particular energy or over all energies.
 
 ```python
-pie.ms_plot(13.1)
+pie.ms_plot(10)     # plot at the 10th step
+pie.ms_plot(13.1)   # plot at 13.1eV
+pie.ms_plot()       # plot the sum of all mass spectra
 ```
-If you're not happy, find new terms with with `pie.ms_cursor` and recalibrate with `pie.ms_calibrate`. Once you're happy we can start extracting data over the energy mass series.
+
+If you're not happy, find new terms with with `pie.ms_cursor` and recalibrate with `pie.ms_calibrate`. Once you're happy we can start extracting data over the energy mass series. Saving is accomplished with the `Pie.ms_save` or `Pie.ms_save_all` methods.
+
+```python
+path = '/path/to/save/file'
+pie.ms_save(10, path)     # save the 10th mass spectrum
+pie.ms_save(13.1, path)   # save the mass spectrum at 13.1eV
+pie.ms_save(path=path)    # save the sum of all mass spectra
+pie.ms_save_all(path)     # save all mass spectra to separate columns
+```
 
 #### Slicing the MS Data vs Energy
 
@@ -157,7 +171,7 @@ pie.pie_current_correction()
 ```
 ![Current measured by Kiethley](kiethley_current.png)
 
-Background correction may also be achieved by slicing somewhere on the mass spectrum representative of background signal (i.e. no peaks) and using it's label to divide all other PIEs by that value. You may also pass the a list as the `pie_keys` keyword of only those labels you want to correct. The `pie_keys` keyword is also available for `Pie.pie_normalize`, and `Pie.pie_normalize_to
+Background correction may also be achieved by slicing somewhere on the mass spectrum representative of background signal (i.e. no peaks) and using it's label to divide all other PIEs by that value. You may also pass the a list as the `pie_keys` keyword of only those labels you want to correct. The `pie_keys` keyword is also used for `Pie.pie_normalize`, and `Pie.pie_normalize_to`.
 
 ```python
 background_label = 'background'
@@ -168,11 +182,23 @@ pie.pie_background_correction(background_label)
 We can also normalize all PIEs to their respective minima and maxima, or normalize to the value at a given energy.
 
 ```python
-pie.pie_normalize()
-pie.pie_normalize_to(13.1)
+pie.pie_normalize()                   # Normalize all PIEs
+pie.pie_normalize(['C2H2', 'C7H8'])   # Normalize PIEs labelled 'C2H2' & 'C7H8'
+pie.pie_normalize_to(10)              # Normalize PIEs to the 10th step
+pie.pie_normalize_to(13.1)            # Normalize PIEs to the value at 13.1eV
+pie.pie_normalize_to(13.1, ['C2H2'])  # Normalize PIE with label 'C2H2' to the value at 13.1eV
 ```
 
 #### Plotting and Saving PIEs
 
-Finally we can plot and save the PIEs we have sliced using `Pie.pie_plot`, and `Pie.pie_save` methods.
+Finally we can plot and save the PIEs we have sliced using `Pie.pie_plot`, and `Pie.pie_save` methods. As for the background correction and normalization methods above, you can supply `pie_keys` to both methods, which should be a list of the PIE labels you wish to plot. `Pie.pie_save` requires a save path, this may be relative or absolute.
 
+```python
+path = '/path/to/save/file'
+pie.pie_plot()                 # Plot all PIEs
+pie.pie_plot(['C2H2', 'C7H8']) # Plot PIEs labelled 'C2H2' & 'C7H8'
+pie.pie_save()                 # Save all PIEs to '/path/to/save/file'
+pie.pie_save(['C2H2'], path)   # Save PIE labelled 'C2H2' to '/path/to/save/file'
+```
+
+Here's how the final PIEs look masses at CH<sub>4</sub>,'C<sub>2</sub>H<sub>2</sub>','C<sub>2</sub>H<sub>4</sub>','C<sub>3</sub>H<sub>6</sub>','C<sub>4</sub>H<sub>6</sub>','C<sub>5</sub>H<sub>10</sub>','C<sub>6</sub>H<sub>6</sub>','C<sub>7</sub>H<sub>8</sub>','C<sub>8</sub>H<sub>10</sub>. The left is with current correction and the right is with current correction and normalization.
